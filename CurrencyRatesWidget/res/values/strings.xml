@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>    
+    <string name="app_name">CurrencyWidget</string>
+    <string name="USD">USD</string>
+    <string name="EUR">EURO</string>
+</resources>
