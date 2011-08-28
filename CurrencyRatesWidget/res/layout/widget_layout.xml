@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_layout"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"    
@@ -8,15 +9,5 @@
         <TextView android:textColor="@android:color/white" android:layout_weight="1" android:text="" android:id="@+id/textView1" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
         <TextView android:textColor="@android:color/white" android:layout_weight="1" android:gravity="center" android:layout_width="wrap_content" android:text="Buy" android:layout_gravity="center_vertical" android:id="@+id/textView2" android:layout_height="wrap_content"></TextView>
         <TextView android:textColor="@android:color/white" android:layout_weight="1" android:gravity="center" android:layout_width="wrap_content" android:text="Sell" android:layout_gravity="center_vertical" android:id="@+id/textView3" android:layout_height="wrap_content"></TextView>
-    </LinearLayout>    
-    <LinearLayout android:layout_width="fill_parent" android:id="@+id/linearLayout1" android:baselineAligned="false" android:layout_height="0dp" android:layout_weight="1" android:layout_gravity="center_horizontal">
-        <TextView android:textColor="@android:color/white" android:text="@string/USD"  android:id="@+id/usd" android:layout_height="wrap_content" android:layout_width="0dp" android:layout_weight="1" android:layout_gravity="center_vertical"></TextView>
-        <TextView android:textColor="@android:color/white" android:text="0" android:id="@+id/usdBuy" android:layout_height="wrap_content" android:layout_width="0dp" android:layout_weight="1" android:gravity="right" android:layout_gravity="center_vertical"></TextView>
-        <TextView android:textColor="@android:color/white" android:text="0" android:id="@+id/usdSell" android:layout_height="wrap_content" android:gravity="right" android:layout_width="0dp" android:layout_weight="1" android:layout_gravity="center_vertical"></TextView>
-    </LinearLayout>
-    <LinearLayout android:layout_width="match_parent" android:id="@+id/linearLayout2" android:layout_height="0dp" android:layout_weight="1">
-        <TextView android:textColor="@android:color/white" android:text="@string/EUR" android:id="@+id/eur" android:layout_height="wrap_content" android:layout_width="0dp" android:layout_weight="1" android:layout_gravity="center_vertical"></TextView>
-        <TextView android:textColor="@android:color/white" android:text="0" android:id="@+id/eurBuy" android:layout_height="wrap_content" android:gravity="right" android:layout_width="0dp" android:layout_weight="1" android:layout_gravity="center_vertical"></TextView>
-        <TextView android:textColor="@android:color/white" android:text="0" android:id="@+id/eurSell" android:layout_height="wrap_content" android:gravity="right" android:layout_width="0dp" android:layout_weight="1" android:layout_gravity="center_vertical"></TextView>
-    </LinearLayout>
+    </LinearLayout>        
 </LinearLayout>

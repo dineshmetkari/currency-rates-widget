@@ -1,52 +1,29 @@
 package com.app.currencywidget;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
-import com.app.R;
+import java.util.ArrayList;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
-import android.content.ComponentName;
 import android.content.Context;
 import android.widget.RemoteViews;
 
+import com.app.R;
+
 public class CurrencyRatesWidget extends AppWidgetProvider {
-	@Override
-	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds){
-		Timer timer = new Timer();
-		timer.scheduleAtFixedRate(new MyTime(context, appWidgetManager), 1, 360000);		
-	}
 	
-	private class MyTime extends TimerTask{
-		RemoteViews remoteViews;
-		AppWidgetManager appWidgetManager;
-		ComponentName thisWidget;
-		CurrencyRates currencyRates;
-		Context context;
+	@Override
+	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds){		
 		
-		public MyTime(Context context, AppWidgetManager appWidgetManager){
-			this.appWidgetManager = appWidgetManager;
-			this.context = context;
-			remoteViews = new RemoteViews(context.getPackageName(),R.layout.widget_layout);
-			thisWidget = new ComponentName(context,CurrencyRatesWidget.class);
-			currencyRates = new CurrencyRates();
+		RemoteViews view1 = new RemoteViews(context.getPackageName(),R.layout.widget_layout);		
+		ArrayList<RemoteViews> views = new ArrayList<RemoteViews>();		
+		CurrencyRates currencyRates = new CurrencyRates(context);
+		
+		views = currencyRates.getCurrencyRates(context);
+		
+		for (int i = 0; i < views.size(); i++){	
+			view1.addView(R.id.widget_layout, views.get(i));
 		}
-				
-		public void run(){	
-			currencyRates.updateRates(context);			
-			
-			remoteViews.setTextViewText(R.id.usdBuy, 
-					currencyRates.getBuyRate((String)context.getResources().getText(R.string.USD)) + " TL");
-			remoteViews.setTextViewText(R.id.usdSell, 
-					currencyRates.getSellRate((String)context.getResources().getText(R.string.USD)) + " TL");
-			remoteViews.setTextViewText(R.id.eurBuy, 
-					currencyRates.getBuyRate((String)context.getResources().getText(R.string.EUR)) + " TL");
-			remoteViews.setTextViewText(R.id.eurSell, 
-					currencyRates.getSellRate((String)context.getResources().getText(R.string.EUR)) + " TL");
-			
-			appWidgetManager.updateAppWidget(thisWidget, remoteViews);		
-			
-		}
-	}
+		
+		appWidgetManager.updateAppWidget(appWidgetIds, view1);
+	}	
 }

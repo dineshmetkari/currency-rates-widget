@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>    
-    <string name="app_name">CurrencyWidget</string>
+    <string name="app_name">ING Bank currency rates</string>
+    
+    <string name="serviceUrl">http://ingbank.com.tr/data/doviz.asp</string>
+    
     <string name="USD">USD</string>
     <string name="EUR">EURO</string>
+           
+    <string-array name="currencyList">
+        <item>@string/USD</item>
+        <item>@string/EUR</item>
+    </string-array>
 </resources>
