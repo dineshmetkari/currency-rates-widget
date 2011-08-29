@@ -65,22 +65,18 @@ public class CurrencyRates extends LinearLayout{
         	}
         	
         } catch (Exception e){
-        	System.out.println("XML parsing exception: " + e);
+        	Log.d("DEBUG","XML parsing exception: " + e);
         }
 		return views;
 	}
 	
 	public String formatRate(String rate){
 		DecimalFormat df = new DecimalFormat("0.00");
-		Log.d("DEBUG",rate);
+		
 		if (rate != null){
 			rate = rate.replace(',', '.');
-			Log.d("DEBUG",rate);
 			Double dRate = Double.parseDouble(rate);
-			Log.d("DEBUG",rate);
-			
 			rate = String.valueOf(df.format(dRate));
-			Log.d("DEBUG",rate);
 		}
 		
 		return rate;
