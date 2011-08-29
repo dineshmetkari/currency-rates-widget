@@ -25,9 +25,11 @@ public class CurrencyRates extends LinearLayout{
 		super(context);		
 	}
 
-	public ArrayList<RemoteViews> getCurrencyRates(Context context){
+	public RemoteViews getCurrencyRates(Context context){
 		ArrayList<RemoteViews> views = new ArrayList<RemoteViews>();
 		String[] currencyList = context.getResources().getStringArray(R.array.currencyList);
+		RemoteViews remoteViews = new RemoteViews(context.getPackageName(),R.layout.widget_layout);
+		remoteViews.removeAllViews(R.id.widget_layout);
 		
 		try {
         	URL url = new URL(context.getResources().getString(R.string.serviceUrl));
@@ -59,6 +61,7 @@ public class CurrencyRates extends LinearLayout{
         				ratesView.setTextViewText(R.id.sellRate, sellRate + ext);
         				
         				views.add(ratesView);
+        				remoteViews.addView(R.id.widget_layout, views.get(i));
         			}
         		}      		       		
         		
@@ -67,7 +70,7 @@ public class CurrencyRates extends LinearLayout{
         } catch (Exception e){
         	Log.d("DEBUG","XML parsing exception: " + e);
         }
-		return views;
+		return remoteViews;
 	}
 	
 	public String formatRate(String rate){
