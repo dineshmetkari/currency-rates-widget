@@ -15,21 +15,22 @@ import org.xml.sax.InputSource;
 import android.content.Context;
 import android.util.Log;
 import android.widget.LinearLayout;
-import android.widget.RemoteViews;
-
 import com.app.R;
 
 public class CurrencyRates extends LinearLayout{
+	
+	private String currencyName;
+	private String sellRate;
+	private String buyRate;
+	private String ext;
 	
 	public CurrencyRates(Context context){
 		super(context);		
 	}
 
-	public RemoteViews getCurrencyRates(Context context){
-		ArrayList<RemoteViews> views = new ArrayList<RemoteViews>();
+	public ArrayList<CurrencyRates> getCurrencyRates(Context context){
+		ArrayList<CurrencyRates> currencyRatesList = new ArrayList<CurrencyRates>();
 		String[] currencyList = context.getResources().getStringArray(R.array.currencyList);
-		RemoteViews remoteViews = new RemoteViews(context.getPackageName(),R.layout.widget_layout);
-		remoteViews.removeAllViews(R.id.widget_layout);
 		
 		try {
         	URL url = new URL(context.getResources().getString(R.string.serviceUrl));
@@ -39,7 +40,6 @@ public class CurrencyRates extends LinearLayout{
         	doc.getDocumentElement().normalize();
         	
         	NodeList nodeList = doc.getElementsByTagName("currency");
-        	        	     	
         	
         	for (int i = 0; i < nodeList.getLength(); i++){
         		
@@ -47,42 +47,70 @@ public class CurrencyRates extends LinearLayout{
         		
         		for (int j = 0; j < currencyList.length; j++){
         			
-        			if (currencyList[j].equals(currencyElement.getAttribute("name"))){
-        				
-        				RemoteViews ratesView = new RemoteViews(context.getPackageName(),R.layout.rates_frame_layout);
-        				
+        			if (currencyList[j].equals(currencyElement.getAttribute("name"))){        				
+        			        				
         				String currencyName = currencyElement.getAttribute("name").replace("EURO",	"EUR"); // fix for EUR
-        				String buyRate = formatRate(currencyElement.getAttribute("buy"));
-        				String sellRate = formatRate(currencyElement.getAttribute("sell"));
+        				String buyRate = currencyElement.getAttribute("buy").replace(',','.');
+        				String sellRate = currencyElement.getAttribute("sell").replace(',','.');
         				String ext = currencyElement.getAttribute("ext");
-        				
-        				ratesView.setTextViewText(R.id.currencyName, currencyName);
-        				ratesView.setTextViewText(R.id.buyRate, buyRate + ext);
-        				ratesView.setTextViewText(R.id.sellRate, sellRate + ext);
-        				
-        				views.add(ratesView);
-        				remoteViews.addView(R.id.widget_layout, views.get(i));
+
+        				CurrencyRates currencyRates = new CurrencyRates(context);
+        				currencyRates.setCurrencyName(currencyName);
+        				currencyRates.setSellRate(sellRate);
+        				currencyRates.setBuyRate(buyRate);
+        				currencyRates.setExt(ext);
+        				currencyRatesList.add(currencyRates);
         			}
-        		}      		       		
-        		
+        		}      	
         	}
         	
         } catch (Exception e){
         	Log.d("DEBUG","XML parsing exception: " + e);
         }
-		return remoteViews;
+		return currencyRatesList;
 	}
 	
 	public String formatRate(String rate){
 		DecimalFormat df = new DecimalFormat("0.00");
 		
-		if (rate != null){
-			rate = rate.replace(',', '.');
+		if (rate != null){			
 			Double dRate = Double.parseDouble(rate);
 			rate = String.valueOf(df.format(dRate));
 		}
 		
 		return rate;
+	}
+
+	public String getCurrencyName() {
+		return currencyName;
+	}
+
+	public void setCurrencyName(String currencyName) {
+		this.currencyName = currencyName;
+	}
+
+	public String getSellRate() {
+		return sellRate;
+	}
+
+	public void setSellRate(String sellRate) {
+		this.sellRate = sellRate;
+	}
+
+	public String getBuyRate() {
+		return buyRate;
+	}
+
+	public void setBuyRate(String buyRate) {
+		this.buyRate = buyRate;
+	}
+
+	public String getExt() {
+		return ext;
+	}
+
+	public void setExt(String ext) {
+		this.ext = ext;
 	}
 
 }
