@@ -48,7 +48,7 @@ public class CurrencyRatesWidget extends AppWidgetProvider {
 		AlarmManager alarmManager = (AlarmManager) context
 				.getSystemService(Context.ALARM_SERVICE);
 		alarmManager.setRepeating(AlarmManager.RTC,
-				SystemClock.elapsedRealtime() + 360000, 360000,
+				SystemClock.elapsedRealtime()+AlarmManager.INTERVAL_HOUR, AlarmManager.INTERVAL_HOUR,
 				createPendingIntent(context));
 	}
 
@@ -87,12 +87,13 @@ public class CurrencyRatesWidget extends AppWidgetProvider {
 			String ext = currencyRatesList.get(i).getExt();
 			String oldCurrencyRate = prefs.getString(currencyName, null);
 
-			if (oldCurrencyRate != null) {
+			if (oldCurrencyRate != null) {			
 				Log.d("Debug1", oldCurrencyRate);
+				Log.d("Debug2", sellRate);
 				// compare old and new rates
 				Double newRate = Double.parseDouble(sellRate);
 				Double oldRate = Double.parseDouble(oldCurrencyRate);
-
+				
 				if (oldRate.compareTo(newRate) > 0) {
 					ratesView.setImageViewResource(R.id.arrow, R.drawable.up);
 					prefEditor.putString(currencyName, sellRate);
@@ -102,7 +103,7 @@ public class CurrencyRatesWidget extends AppWidgetProvider {
 					prefEditor.putString(currencyName, sellRate);
 					prefEditor.putString("arrow", "down");
 				} else {
-					if (prefs.getString("arrow", "up").equals("down")) {
+					if (prefs.getString("arrow", null).equals("down")) {
 						ratesView.setImageViewResource(R.id.arrow,
 								R.drawable.down);
 					} else {
@@ -114,9 +115,11 @@ public class CurrencyRatesWidget extends AppWidgetProvider {
 			} else {
 				// first run, save rates
 				prefEditor.putString(currencyName, sellRate);
+				ratesView.setImageViewResource(R.id.arrow,
+						R.drawable.up);
 			}
 			prefEditor.commit();
-
+			
 			ratesView.setTextViewText(R.id.currencyName, currencyName);
 			ratesView.setTextViewText(R.id.buyRate,
 					currencyRates.formatRate(buyRate) + ext);
