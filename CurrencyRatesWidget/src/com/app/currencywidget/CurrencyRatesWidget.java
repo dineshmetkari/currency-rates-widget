@@ -94,11 +94,11 @@ public class CurrencyRatesWidget extends AppWidgetProvider {
 				Double newRate = Double.parseDouble(sellRate);
 				Double oldRate = Double.parseDouble(oldCurrencyRate);
 				
-				if (oldRate.compareTo(newRate) > 0) {
+				if (newRate.compareTo(oldRate) > 0) {
 					ratesView.setImageViewResource(R.id.arrow, R.drawable.up);
 					prefEditor.putString(currencyName, sellRate);
 					prefEditor.putString("arrow", "up");
-				} else if (oldRate.compareTo(newRate) < 0) {
+				} else if (newRate.compareTo(oldRate) < 0) {
 					ratesView.setImageViewResource(R.id.arrow, R.drawable.down);
 					prefEditor.putString(currencyName, sellRate);
 					prefEditor.putString("arrow", "down");
