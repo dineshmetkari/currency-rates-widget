@@ -7,35 +7,33 @@ import java.util.ArrayList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import android.os.StrictMode;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import android.content.Context;
 import android.util.Log;
-import android.widget.LinearLayout;
-import com.app.R;
 
-public class CurrencyRates extends LinearLayout {
+public class CurrencyRates {
 
 	private String currencyName;
 	private String sellRate;
 	private String buyRate;
 	private String ext;
 
-	public CurrencyRates(Context context) {
-		super(context);
+	public CurrencyRates() {
 	}
 
-	public ArrayList<CurrencyRates> getCurrencyRates(Context context) {
-		ArrayList<CurrencyRates> currencyRatesList = new ArrayList<CurrencyRates>();
-		String[] currencyList = context.getResources().getStringArray(
-				R.array.currencyList);
+	public ArrayList<CurrencyRates> getCurrencyRates(String serviceURL, String[] currencyList) {
 
-		try {
-			URL url = new URL(context.getResources().getString(
-					R.string.serviceUrl));
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+		ArrayList<CurrencyRates> currencyRatesList = new ArrayList<CurrencyRates>();
+
+        try {
+			URL url = new URL(serviceURL);
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			DocumentBuilder db = dbf.newDocumentBuilder();
 			Document doc = db.parse(new InputSource(url.openStream()));
@@ -60,7 +58,7 @@ public class CurrencyRates extends LinearLayout {
 								.replace(',', '.');
 						String ext = currencyElement.getAttribute("ext");
 
-						CurrencyRates currencyRates = new CurrencyRates(context);
+						CurrencyRates currencyRates = new CurrencyRates();
 						currencyRates.setCurrencyName(currencyName);
 						currencyRates.setSellRate(sellRate);
 						currencyRates.setBuyRate(buyRate);
