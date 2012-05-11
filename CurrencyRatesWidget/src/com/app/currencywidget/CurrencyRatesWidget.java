@@ -20,18 +20,14 @@ import com.app.R;
 public class CurrencyRatesWidget extends AppWidgetProvider {
 
 	private static final String ACTION_WIDGET_RECEIVER = "com.app.currencywidget.ACTION_WIDGET_RECEIVER";
-	private RemoteViews currencyRatesView = new RemoteViews("com.app",
+	private final RemoteViews currencyRatesView = new RemoteViews("com.app",
 			R.layout.widget_layout);
-	private CurrencyRates currencyRates;
-	private ArrayList<CurrencyRates> currencyRatesList = new ArrayList<CurrencyRates>();
-	private SharedPreferences prefs;
 
-	private PendingIntent createPendingIntent(Context context) {
+    private PendingIntent createPendingIntent(Context context) {
 		Intent intent = new Intent(context, CurrencyRatesWidget.class);
 		intent.setAction(ACTION_WIDGET_RECEIVER);
-		PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0,
-				intent, PendingIntent.FLAG_UPDATE_CURRENT);
-		return pendingIntent;
+		return PendingIntent.getBroadcast(context, 0,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
 	}
 
 	@Override
@@ -66,67 +62,70 @@ public class CurrencyRatesWidget extends AppWidgetProvider {
 		updateWidget(context);
 	}
 
-	public void updateWidget(Context context) {
+	void updateWidget(Context context) {
 
-		currencyRates = new CurrencyRates(context);
-		currencyRatesList = currencyRates.getCurrencyRates(context);
+        CurrencyRates currencyRates = new CurrencyRates();
+        ArrayList<CurrencyRates> currencyRatesList = currencyRates.getCurrencyRates(
+                context.getResources().getString(R.string.serviceUrl),
+                context.getResources().getStringArray(R.array.currencyList)
+        );
 
-		prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		SharedPreferences.Editor prefEditor = prefs.edit();
 
 		currencyRatesView.removeAllViews(R.id.widget_layout);
 
-		for (int i = 0; i < currencyRatesList.size(); i++) {
+        for (CurrencyRates aCurrencyRatesList : currencyRatesList) {
 
-			RemoteViews ratesView = new RemoteViews(context.getPackageName(),
-					R.layout.rates_frame_layout);
+            RemoteViews ratesView = new RemoteViews(context.getPackageName(),
+                    R.layout.rates_frame_layout);
 
-			String currencyName = currencyRatesList.get(i).getCurrencyName();
-			String buyRate = currencyRatesList.get(i).getBuyRate();
-			String sellRate = currencyRatesList.get(i).getSellRate();
-			String ext = currencyRatesList.get(i).getExt();
-			String oldCurrencyRate = prefs.getString(currencyName, null);
+            String currencyName = aCurrencyRatesList.getCurrencyName();
+            String buyRate = aCurrencyRatesList.getBuyRate();
+            String sellRate = aCurrencyRatesList.getSellRate();
+            String ext = aCurrencyRatesList.getExt();
+            String oldCurrencyRate = prefs.getString(currencyName, null);
 
-			if (oldCurrencyRate != null) {			
-				Log.d("Debug1", oldCurrencyRate);
-				Log.d("Debug2", sellRate);
-				// compare old and new rates
-				Double newRate = Double.parseDouble(sellRate);
-				Double oldRate = Double.parseDouble(oldCurrencyRate);
-				
-				if (newRate.compareTo(oldRate) > 0) {
-					ratesView.setImageViewResource(R.id.arrow, R.drawable.up);
-					prefEditor.putString(currencyName, sellRate);
-					prefEditor.putString("arrow", "up");
-				} else if (newRate.compareTo(oldRate) < 0) {
-					ratesView.setImageViewResource(R.id.arrow, R.drawable.down);
-					prefEditor.putString(currencyName, sellRate);
-					prefEditor.putString("arrow", "down");
-				} else {
-					if (prefs.getString("arrow", null).equals("down")) {
-						ratesView.setImageViewResource(R.id.arrow,
-								R.drawable.down);
-					} else {
-						ratesView.setImageViewResource(R.id.arrow,
-								R.drawable.up);
-					}
-				}
+            if (oldCurrencyRate != null) {
+                Log.d("Debug1", oldCurrencyRate);
+                Log.d("Debug2", sellRate);
+                // compare old and new rates
+                Double newRate = Double.parseDouble(sellRate);
+                Double oldRate = Double.parseDouble(oldCurrencyRate);
 
-			} else {
-				// first run, save rates
-				prefEditor.putString(currencyName, sellRate);
-				ratesView.setImageViewResource(R.id.arrow,
-						R.drawable.up);
-			}
-			prefEditor.commit();
-			
-			ratesView.setTextViewText(R.id.currencyName, currencyName);
-			ratesView.setTextViewText(R.id.buyRate,
-					currencyRates.formatRate(buyRate) + ext);
-			ratesView.setTextViewText(R.id.sellRate,
-					currencyRates.formatRate(sellRate) + ext);
-			currencyRatesView.addView(R.id.widget_layout, ratesView);
-		}
+                if (newRate.compareTo(oldRate) > 0) {
+                    ratesView.setImageViewResource(R.id.arrow, R.drawable.up);
+                    prefEditor.putString(currencyName, sellRate);
+                    prefEditor.putString("arrow", "up");
+                } else if (newRate.compareTo(oldRate) < 0) {
+                    ratesView.setImageViewResource(R.id.arrow, R.drawable.down);
+                    prefEditor.putString(currencyName, sellRate);
+                    prefEditor.putString("arrow", "down");
+                } else {
+                    if (prefs.getString("arrow", null).equals("down")) {
+                        ratesView.setImageViewResource(R.id.arrow,
+                                R.drawable.down);
+                    } else {
+                        ratesView.setImageViewResource(R.id.arrow,
+                                R.drawable.up);
+                    }
+                }
+
+            } else {
+                // first run, save rates
+                prefEditor.putString(currencyName, sellRate);
+                ratesView.setImageViewResource(R.id.arrow,
+                        R.drawable.up);
+            }
+            prefEditor.commit();
+
+            ratesView.setTextViewText(R.id.currencyName, currencyName);
+            ratesView.setTextViewText(R.id.buyRate,
+                    currencyRates.formatRate(buyRate) + ext);
+            ratesView.setTextViewText(R.id.sellRate,
+                    currencyRates.formatRate(sellRate) + ext);
+            currencyRatesView.addView(R.id.widget_layout, ratesView);
+        }
 
 		currencyRatesView.setOnClickPendingIntent(R.id.CurrencyRatesWidget,
 				createPendingIntent(context));
